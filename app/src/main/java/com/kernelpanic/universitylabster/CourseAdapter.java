@@ -1,6 +1,7 @@
 package com.kernelpanic.universitylabster;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,11 +43,13 @@ public class CourseAdapter extends ArrayAdapter<Course> {
         courseDate.setText(course.time);
         courseLocation.setText(course.location);
 
+        if(course.up < 5)
+            convertView.setBackgroundColor(Color.rgb(255,255,153));
+
         return convertView;
     }
 
     public Course getItem(int x) {
-        Log.e("DEBUUUUUUUG", String.valueOf(x));
         return courses.get(x);
     }
 }

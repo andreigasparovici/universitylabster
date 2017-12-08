@@ -1,37 +1,60 @@
 package com.kernelpanic.universitylabster;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kernelpanic.universitylabster.fragments.SettingsFragment;
 import com.kernelpanic.universitylabster.fragments.TimetableFragment;
 import com.kernelpanic.universitylabster.fragments.WeekFragment;
+import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.models.Notification;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 
 public class DashboardActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference notificationReference;
+
     private FragmentManager fragmentManager = getSupportFragmentManager();
 
     private WeekFragment weekFragment;
     private SettingsFragment settingsFragment;
     private TimetableFragment timetableFragment;
+
+    static Context context;
+
+    private NotificationCompat.Builder mBuilder;
 
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
@@ -48,6 +71,59 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         ButterKnife.bind(this);
+
+        context = this;
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        notificationReference = firebaseDatabase.getReference("notifications");
+
+        notificationReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ArrayList<Notification> children = new ArrayList<>();
+
+                for(DataSnapshot child: dataSnapshot.getChildren())
+                    children.add(child.getValue(Notification.class));
+
+                Notification last = children.size() >= 1 ? children.get(children.size() - 1) : null;
+
+                if(last == null) return;
+
+                Intent acceptIntent = new Intent(DashboardActivity.this, ActionReciver.class);
+                Intent declineIntent = new Intent(DashboardActivity.this, ActionReciver.class);
+
+                acceptIntent.putExtra("action","1");
+                acceptIntent.putExtra("id", String.valueOf(last.id));
+                declineIntent.putExtra("action","decline");
+
+                final PendingIntent piAccept = PendingIntent.getBroadcast(DashboardActivity.this, 1, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                final PendingIntent piDecline = PendingIntent.getBroadcast(DashboardActivity.this, 0, declineIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                mBuilder =
+                        new NotificationCompat.Builder(DashboardActivity.this)
+                                .setSmallIcon(R.drawable.man_thinking)
+                                .setContentTitle("Aproba/Refuza curs")
+                                .setOngoing(false)
+                                .setAutoCancel(true)
+                                .setPriority(android.app.Notification.PRIORITY_DEFAULT)
+                                .setDefaults(android.app.Notification.DEFAULT_ALL)
+                                .setStyle(new NotificationCompat.BigTextStyle()
+                                        .bigText(last.name))
+                                .addAction(R.drawable.ic_launcher_foreground,
+                                        "Accept", piAccept)
+                                .addAction (R.drawable.ic_launcher_foreground,
+                                        "Decline", piDecline);
+
+                NotificationManager mNotifyMgr =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotifyMgr.notify(Integer.parseInt(last.id), mBuilder.build());
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -103,5 +179,12 @@ public class DashboardActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public static void cancelNotification(String id)
+    {
+        int idNotificare = Integer.valueOf(id);
+        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(idNotificare);
     }
 }
