@@ -8,6 +8,7 @@ import java.util.Date;
  */
 
 public class Course {
+    public int id;
     public int day;
     public String location;
     public String teacher;

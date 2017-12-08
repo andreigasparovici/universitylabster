@@ -31,8 +31,6 @@ public class WeekFragment extends Fragment {
 
     DatabaseReference reference = database.getReference("courses");
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
@@ -52,24 +50,6 @@ public class WeekFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        /*reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<Course> courses = new ArrayList<>();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    courses.add(snapshot.getValue(Course.class));
-                }
-
-                final CourseAdapter adapter = new CourseAdapter(CoursesFragment.this.getContext(), courses);
-                courseList.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
 
         final WeekAdapter adapter = new WeekAdapter(WeekFragment.this.getContext());
         courseList.setAdapter(adapter);

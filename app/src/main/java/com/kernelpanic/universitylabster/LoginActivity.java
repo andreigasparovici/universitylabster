@@ -35,8 +35,6 @@ public class LoginActivity extends AppCompatActivity {
     void doLogin() {
         String email = editEmail.getText().toString(), password = editPassword.getText().toString();
 
-        Log.d("DEBUG", "HERE");
-
         final MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .content("Vă rugăm aşteptaţi")
                 .progress(true, 0)
@@ -63,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void goToRegister(View view) {
         startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-        finish();
+        //finish();
     }
 
     @Override

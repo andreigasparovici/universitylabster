@@ -1,11 +1,16 @@
 package com.kernelpanic.universitylabster;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +29,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class CoursesActivity extends AppCompatActivity {
 
@@ -34,6 +40,15 @@ public class CoursesActivity extends AppCompatActivity {
     TextView title;
 
     String day = "";
+
+    @OnClick(R.id.addCourseButton)
+    void addCourse() {
+        Intent intent = new Intent(CoursesActivity.this, AddCourseActivity.class);
+        Bundle b = new Bundle();
+        b.putInt("day", getIndex(day));
+        intent.putExtras(b);
+        startActivity(intent);
+    }
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference reference = database.getReference("courses");
@@ -59,12 +74,11 @@ public class CoursesActivity extends AppCompatActivity {
 
         title.setText("Vezi cursurile de " + day.toLowerCase() + ":");
 
-        Log.e("DEBUG", String.valueOf(getIndex(day)));
-
-//        final MaterialDialog dialog = new MaterialDialog.Builder(this)
-//                .content("Se încarcă datele")
-//                .progress(true, 0)
-//                .show();
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .content("Se încarcă datele")
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .show();
 
         DatabaseReference reference = database.getReference("courses");
 
@@ -72,25 +86,47 @@ public class CoursesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-               // if(!dialog.isCancelled())
-                ///    dialog.cancel();
+                if(!dialog.isCancelled())
+                    dialog.cancel();
 
                 if (dataSnapshot.exists()) {
                     ArrayList<Course> courses = new ArrayList<>();
 
                     for (DataSnapshot course : dataSnapshot.getChildren()) {
+
                         Course c = course.getValue(Course.class);
+                        c.id = Integer.valueOf(course.getKey());
+                        Log.e("DEBUG", String.valueOf(c.id));
                         if (c.day == getIndex(day))
-                            courses.add(course.getValue(Course.class));
+                            courses.add(c);
                     }
 
                     CourseAdapter courseAdapter = new CourseAdapter(CoursesActivity.this, courses);
                     courseList.setAdapter(courseAdapter);
+
+                    if(courses.size() == 0) {
+                        Toast.makeText(CoursesActivity.this, "Nu există cursuri!", Toast.LENGTH_SHORT).show();
+                        Log.e("DEBUG", "ZEROO");
+                    }
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) { }
+        });
+
+        courseList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?>adapter, View v, int position, long x){
+                Course item = (Course)adapter.getItemAtPosition(position);
+
+                Intent intent = new Intent(CoursesActivity.this, DetailsActivity.class);
+                Bundle b = new Bundle();
+                b.putInt("course", item.id);
+
+                intent.putExtras(b);
+                startActivity(intent);
+            }
         });
 
     }
@@ -103,5 +139,40 @@ public class CoursesActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        DatabaseReference reference = database.getReference("courses");
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    ArrayList<Course> courses = new ArrayList<>();
+
+                    for (DataSnapshot course : dataSnapshot.getChildren()) {
+
+                        Course c = course.getValue(Course.class);
+                        c.id = Integer.valueOf(course.getKey());
+                        Log.e("DEBUG", String.valueOf(c.id));
+                        if (c.day == getIndex(day))
+                            courses.add(c);
+                    }
+
+                    CourseAdapter courseAdapter = new CourseAdapter(CoursesActivity.this, courses);
+                    courseList.setAdapter(courseAdapter);
+
+                    if(courses.size() == 0) {
+                        Toast.makeText(CoursesActivity.this, "Nu există cursuri!", Toast.LENGTH_SHORT).show();
+                        Log.e("DEBUG", "ZEROO");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
     }
 }

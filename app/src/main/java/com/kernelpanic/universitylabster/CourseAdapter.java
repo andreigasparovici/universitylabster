@@ -1,6 +1,7 @@
 package com.kernelpanic.universitylabster;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +12,18 @@ import com.kernelpanic.universitylabster.fragments.WeekFragment;
 import com.kernelpanic.universitylabster.models.Course;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by andrei on 08.12.2017.
  */
 
 public class CourseAdapter extends ArrayAdapter<Course> {
+    List<Course> courses;
+
     public CourseAdapter(Context context, ArrayList<Course> courses) {
         super(context, 0, courses);
+        this.courses = courses;
     }
 
     @Override
@@ -38,5 +43,10 @@ public class CourseAdapter extends ArrayAdapter<Course> {
         courseLocation.setText(course.location);
 
         return convertView;
+    }
+
+    public Course getItem(int x) {
+        Log.e("DEBUUUUUUUG", String.valueOf(x));
+        return courses.get(x);
     }
 }
