@@ -14,9 +14,9 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.kernelpanic.universitylabster.fragments.CoursesFragment;
 import com.kernelpanic.universitylabster.fragments.SettingsFragment;
 import com.kernelpanic.universitylabster.fragments.TimetableFragment;
+import com.kernelpanic.universitylabster.fragments.WeekFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +29,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
 
-    private CoursesFragment coursesFragment;
+    private WeekFragment weekFragment;
     private SettingsFragment settingsFragment;
     private TimetableFragment timetableFragment;
 
@@ -52,7 +52,7 @@ public class DashboardActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
-        coursesFragment = new CoursesFragment();
+        weekFragment = new WeekFragment();
         timetableFragment = new TimetableFragment();
         settingsFragment = new SettingsFragment();
 
@@ -60,30 +60,29 @@ public class DashboardActivity extends AppCompatActivity {
             if (savedInstanceState != null) return;
 
             fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, coursesFragment)
-                    .commit();
+                .add(R.id.fragment_container, weekFragment)
+                .commit();
         }
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.action_courses:
-                            fragmentManager.beginTransaction().replace(R.id.fragment_container, coursesFragment).commit();
-                            break;
+                switch (item.getItemId()) {
+                    case R.id.action_courses:
+                        fragmentManager.beginTransaction().replace(R.id.fragment_container, weekFragment).commit();
+                        break;
 
-                        case R.id.action_timetable:
-                            fragmentManager.beginTransaction().replace(R.id.fragment_container, timetableFragment).commit();
-                            break;
+                    case R.id.action_timetable:
+                        fragmentManager.beginTransaction().replace(R.id.fragment_container, timetableFragment).commit();
+                        break;
 
-                        case R.id.action_settings:
-                            fragmentManager.beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
-                            break;
+                    case R.id.action_settings:
+                        fragmentManager.beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
+                        break;
 
-                    }
-                    return true;
+                }
+                return true;
                 }
             });
     }
