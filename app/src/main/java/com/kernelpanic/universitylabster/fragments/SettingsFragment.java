@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kernelpanic.universitylabster.R;
@@ -52,10 +53,26 @@ public class SettingsFragment extends Fragment {
     @BindView(R.id.userSection)
     EditText userSection;
 
-    void populateUI(String faculty, String section, Integer year) {
+    void populateUI(String faculty, String section, String year) {
         userFaculty.setText(faculty);
-        userYear.setText(String.valueOf(year));
+        userYear.setText(year);
         userSection.setText(section);
+    }
+
+    @OnClick(R.id.changeData)
+    void changeData() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        reference.child(user.getUid())
+                .child("faculty").setValue(userFaculty.getText().toString());
+        reference.child(user.getUid())
+                .child("section").setValue(userSection.getText().toString());
+        reference.child(user.getUid())
+                .child("year").setValue(Integer.valueOf(userYear.getText().toString()));
+        new MaterialDialog.Builder(SettingsFragment.this.getContext())
+                .title("Success")
+                .positiveText("OK")
+                .show();
     }
 
     @OnClick(R.id.changeEmail)
@@ -161,7 +178,7 @@ public class SettingsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String faculty = dataSnapshot.child("faculty").getValue(String.class);
                 String section = dataSnapshot.child("section").getValue(String.class);
-                Integer year = Integer.valueOf(dataSnapshot.child("year").getValue(String.class));
+                String year = dataSnapshot.child("year").getValue(String.class);
 
                 populateUI(faculty, section, year);
             }

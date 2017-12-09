@@ -79,7 +79,8 @@ public class RegisterActivity extends AppCompatActivity {
             year = editYear.getText().toString(),
             section = editSection.getText().toString(),
             group = editGroup.getText().toString(),
-            subGroup = editSubGroup.getText().toString();
+            subGroup = editSubGroup.getText().toString(),
+            contact = editContact.getText().toString();
 
         Boolean ok=true;
         if(email.length()<5){ok=false;editEmail.setError("Invalid");}
@@ -120,6 +121,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     data.put("section", section);
                                     data.put("group", group);
                                     data.put("subGroup", subGroup);
+                                    data.put("name", user.getDisplayName());
+                                    data.put("contact", contact);
 
                                     reference.child(user.getUid()).setValue(data);
 

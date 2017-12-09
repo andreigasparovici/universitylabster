@@ -30,6 +30,7 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.kernelpanic.universitylabster.fragments.SettingsFragment;
+import com.kernelpanic.universitylabster.fragments.SocialFragment;
 import com.kernelpanic.universitylabster.fragments.TimetableFragment;
 import com.kernelpanic.universitylabster.fragments.WeekFragment;
 import com.kernelpanic.universitylabster.models.Event;
@@ -66,6 +67,7 @@ public class DashboardActivity extends AppCompatActivity {
     WeekFragment weekFragment;
     SettingsFragment settingsFragment;
     TimetableFragment timetableFragment;
+    SocialFragment socialFragment;
 
     NotificationCompat.Builder mBuilder;
 
@@ -92,6 +94,7 @@ public class DashboardActivity extends AppCompatActivity {
         weekFragment = new WeekFragment();
         timetableFragment = new TimetableFragment();
         settingsFragment = new SettingsFragment();
+        socialFragment = new SocialFragment();
 
         if (findViewById(R.id.fragment_container) != null) {
             fragmentManager.beginTransaction()
@@ -112,6 +115,9 @@ public class DashboardActivity extends AppCompatActivity {
                 case R.id.action_settings:
                     fragmentManager.beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
                     break;
+
+                case R.id.action_others:
+                    fragmentManager.beginTransaction().replace(R.id.fragment_container, socialFragment).commit();
 
             }
             return true;
