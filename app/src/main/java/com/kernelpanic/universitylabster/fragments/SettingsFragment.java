@@ -1,20 +1,15 @@
 package com.kernelpanic.universitylabster.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,8 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kernelpanic.universitylabster.R;
-
-import java.util.concurrent.CompletableFuture;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +61,7 @@ public class SettingsFragment extends Fragment {
         reference.child(user.getUid())
                 .child("section").setValue(userSection.getText().toString());
         reference.child(user.getUid())
-                .child("year").setValue(Integer.valueOf(userYear.getText().toString()));
+                .child("year").setValue(userYear.getText().toString());
         new MaterialDialog.Builder(SettingsFragment.this.getContext())
                 .title("Success")
                 .positiveText("OK")

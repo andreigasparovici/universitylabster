@@ -1,13 +1,12 @@
 package com.kernelpanic.universitylabster;
 
 import android.app.TimePickerDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -110,18 +109,22 @@ public class AddEventActivity extends AppCompatActivity {
 
         long date = System.currentTimeMillis();
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("teacher", editTeacher.getText().toString());
-        data.put("location", editLocation.getText().toString());
+        final String
+                teacher = editTeacher.getText().toString();
+        final String location = editLocation.getText().toString();
+        String name = editName.getText().toString();
 
-        String name = editName.getText().toString();;
+        boolean ok = true;
+        if(name.length()<5){ok=false;editName.setError("Invalid");}
+        Map<String, Object> data = new HashMap<>();
+        data.put("teacher", teacher);
+        data.put("location", location);
 
         if(isCourse.isChecked()) {
             name = "Curs " + name;
         } else {
             name = "Laborator " + name;
         }
-
         data.put("name", name);
         data.put("time", viewStart.getText().toString() + "-" + viewStop.getText().toString());
         data.put("day", dayIndex);

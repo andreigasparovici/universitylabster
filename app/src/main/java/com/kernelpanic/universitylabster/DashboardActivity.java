@@ -1,21 +1,21 @@
 package com.kernelpanic.universitylabster;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.Manifest;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,9 +44,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import butterknife.BindView;
@@ -174,8 +172,6 @@ public class DashboardActivity extends AppCompatActivity {
                 if(last.id.equals(lastNotifiedId)) return;
 
                 if(last.user_id.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) return;
-
-                Log.e("penis", lastNotifiedId);
 
                 Intent acceptIntent = new Intent(DashboardActivity.this, ActionReciver.class);
                 Intent declineIntent = new Intent(DashboardActivity.this, ActionReciver.class);

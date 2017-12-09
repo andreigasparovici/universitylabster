@@ -1,16 +1,13 @@
 package com.kernelpanic.universitylabster.fragments;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,7 +61,7 @@ public class SocialFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String year = dataSnapshot.getValue(String.class);
 
-                FirebaseDatabase.getInstance().getReference("users").orderByChild("year").equalTo(year.toString())
+                FirebaseDatabase.getInstance().getReference("users").orderByChild("year").equalTo(year)
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
