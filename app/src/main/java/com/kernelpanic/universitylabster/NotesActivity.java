@@ -1,9 +1,7 @@
 package com.kernelpanic.universitylabster;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
@@ -18,8 +16,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kernelpanic.universitylabster.models.Note;
-import com.kernelpanic.universitylabster.models.Notification;
+import com.kernelpanic.universitylabster.adapters.MessageAdapter;
+import com.kernelpanic.universitylabster.models.Message;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,13 +26,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class NotesActivity extends AppCompatActivity {
 
-    class NoteComparator implements Comparator<Note> {
+    class NoteComparator implements Comparator<Message> {
         @Override
-        public int compare(Note n1, Note n2) {
+        public int compare(Message n1, Message n2) {
             return (int)(n1.time - n2.time) % Integer.MAX_VALUE;
         }
     }
@@ -61,22 +58,19 @@ public class NotesActivity extends AppCompatActivity {
 
         editMessage = findViewById(R.id.editText);
 
-        editMessage.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    Note note = new Note();
-                    note.message = editMessage.getText().toString();
-                    note.user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                    note.time = System.currentTimeMillis();
+        editMessage.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                Message message = new Message();
+                message.content = editMessage.getText().toString();
+                message.user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                message.time = System.currentTimeMillis();
 
-                    int randomShit = ThreadLocalRandom.current().nextInt(0, 10000000);
+                int randomShit = ThreadLocalRandom.current().nextInt(0, 10000000);
 
-                    reference.child(String.valueOf(randomShit)).setValue(note);
-                    return true;
-                }
-                return false;
+                reference.child(String.valueOf(randomShit)).setValue(message);
+                return true;
             }
+            return false;
         });
 
         Bundle b = getIntent().getExtras();
@@ -89,13 +83,13 @@ public class NotesActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<Note> notes = new ArrayList<>();
+                ArrayList<Message> notes = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    notes.add(child.getValue(Note.class));
+                    notes.add(child.getValue(Message.class));
                 }
                 Collections.sort(notes, new NoteComparator());
 
-                final NoteAdapter noteAdapter = new NoteAdapter(NotesActivity.this, notes);
+                final MessageAdapter noteAdapter = new MessageAdapter(NotesActivity.this, notes);
                 noteList.setAdapter(noteAdapter);
             }
 

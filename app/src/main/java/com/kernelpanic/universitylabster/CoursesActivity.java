@@ -1,6 +1,5 @@
 package com.kernelpanic.universitylabster;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,13 +16,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.kernelpanic.universitylabster.fragments.WeekFragment;
-import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.adapters.EventAdapter;
+import com.kernelpanic.universitylabster.adapters.WeekAdapter;
+import com.kernelpanic.universitylabster.models.Event;
 import com.kernelpanic.universitylabster.viewmodels.DetailsViewModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +50,7 @@ public class CoursesActivity extends AppCompatActivity {
     }
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference reference = database.getReference("courses");
+   // DatabaseReference reference = database.getReference("courses");
     DetailsViewModel viewModel;
 
     int getIndex(String day) {
@@ -95,11 +92,11 @@ public class CoursesActivity extends AppCompatActivity {
                     dialog.cancel();
 
                 if (dataSnapshot.exists()) {
-                    ArrayList<Course> courses = new ArrayList<>();
+                    ArrayList<Event> courses = new ArrayList<>();
 
                     for (DataSnapshot course : dataSnapshot.getChildren()) {
 
-                        Course c = course.getValue(Course.class);
+                        Event c = course.getValue(Event.class);
                         if(c == null) continue;
 
                         c.id = Integer.valueOf(course.getKey());
@@ -108,7 +105,7 @@ public class CoursesActivity extends AppCompatActivity {
                             courses.add(c);
                     }
 
-                    CourseAdapter courseAdapter = new CourseAdapter(CoursesActivity.this, courses);
+                    EventAdapter courseAdapter = new EventAdapter(CoursesActivity.this, courses);
                     courseList.setAdapter(courseAdapter);
 
                     if(courses.size() == 0) {
@@ -125,7 +122,7 @@ public class CoursesActivity extends AppCompatActivity {
         courseList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?>adapter, View v, int position, long x){
-                Course item = (Course)adapter.getItemAtPosition(position);
+                Event item = (Event)adapter.getItemAtPosition(position);
 
                 Intent intent = new Intent(CoursesActivity.this, DetailsActivity.class);
                 //Bundle b = new Bundle();
@@ -162,18 +159,18 @@ public class CoursesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    ArrayList<Course> courses = new ArrayList<>();
+                    ArrayList<Event> courses = new ArrayList<>();
 
                     for (DataSnapshot course : dataSnapshot.getChildren()) {
 
-                        Course c = course.getValue(Course.class);
+                        Event c = course.getValue(Event.class);
                         c.id = Integer.valueOf(course.getKey());
                         Log.e("DEBUG", String.valueOf(c.id));
                         if (c.day == getIndex(day))
                             courses.add(c);
                     }
 
-                    CourseAdapter courseAdapter = new CourseAdapter(CoursesActivity.this, courses);
+                    EventAdapter courseAdapter = new EventAdapter(CoursesActivity.this, courses);
                     courseList.setAdapter(courseAdapter);
 
                     if(courses.size() == 0) {

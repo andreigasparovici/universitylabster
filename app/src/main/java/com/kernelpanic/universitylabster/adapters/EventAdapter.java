@@ -1,16 +1,16 @@
-package com.kernelpanic.universitylabster;
+package com.kernelpanic.universitylabster.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.kernelpanic.universitylabster.fragments.WeekFragment;
-import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.R;
+import com.kernelpanic.universitylabster.models.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,24 +19,26 @@ import java.util.List;
  * Created by andrei on 08.12.2017.
  */
 
-public class CourseAdapter extends ArrayAdapter<Course> {
-    List<Course> courses;
+public class EventAdapter extends ArrayAdapter<Event> {
+    private List<Event> eventList;
 
-    public CourseAdapter(Context context, ArrayList<Course> courses) {
-        super(context, 0, courses);
-        this.courses = courses;
+    public EventAdapter(Context context, ArrayList<Event> events) {
+        super(context, 0, events);
+        eventList = events;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Course course = getItem(position);
-        if (convertView == null) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        Event course = getItem(position);
+        if (convertView == null)
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_course, parent, false);
-        }
+
         TextView courseName = convertView.findViewById(R.id.courseName);
         TextView courseTeacher = convertView.findViewById(R.id.courseTeacher);
         TextView courseDate = convertView.findViewById(R.id.courseDate);
         TextView courseLocation = convertView.findViewById(R.id.courseLocation);
+
+        if (course == null) return convertView;
 
         courseName.setText(course.name);
         courseTeacher.setText(course.teacher);
@@ -49,7 +51,7 @@ public class CourseAdapter extends ArrayAdapter<Course> {
         return convertView;
     }
 
-    public Course getItem(int x) {
-        return courses.get(x);
+    public Event getItem(int index) {
+        return eventList.get(index);
     }
 }

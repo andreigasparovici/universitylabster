@@ -1,14 +1,9 @@
 package com.kernelpanic.universitylabster;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.firebase.database.DataSnapshot;
@@ -20,43 +15,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.kernelpanic.universitylabster.fragments.AttendanceFragment;
 import com.kernelpanic.universitylabster.fragments.DetailsFragment;
 import com.kernelpanic.universitylabster.fragments.MaterialsFragment;
-import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.models.Event;
+import com.kernelpanic.universitylabster.utilities.ViewPagerAdapter;
 import com.kernelpanic.universitylabster.viewmodels.DetailsViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
-
-class ViewPagerAdapter extends FragmentPagerAdapter {
-    private final List<Fragment> mFragmentList = new ArrayList<>();
-    private final List<String> mFragmentTitleList = new ArrayList<>();
-
-    public ViewPagerAdapter(FragmentManager manager) {
-        super(manager);
-    }
-
-    @Override
-    public Fragment getItem(int position) {
-        return mFragmentList.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return mFragmentList.size();
-    }
-
-    public void addFragment(Fragment fragment, String title) {
-        mFragmentList.add(fragment);
-        mFragmentTitleList.add(title);
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return mFragmentTitleList.get(position);
-    }
-}
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -103,8 +69,8 @@ public class DetailsActivity extends AppCompatActivity {
                         int id = -1;
                         for (DataSnapshot course : dataSnapshot.getChildren()) {
                             if(course != null) {
-                                viewModel.course = course.getValue(Course.class);
-                                id = course.getValue(Course.class).id;
+                                viewModel.course = course.getValue(Event.class);
+                                id = course.getValue(Event.class).id;
                                 break;
                             }
                         }

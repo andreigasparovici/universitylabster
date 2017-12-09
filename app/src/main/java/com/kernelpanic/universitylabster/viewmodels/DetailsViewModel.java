@@ -1,9 +1,6 @@
 package com.kernelpanic.universitylabster.viewmodels;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-
-import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.models.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,7 @@ import java.util.List;
  */
 
 public class DetailsViewModel{
-    public static Course course = new Course();
+    public static Event course = new Event();
     public static List<String> attendance = new ArrayList<>();
     public static int courseId;
 }

@@ -1,27 +1,22 @@
 package com.kernelpanic.universitylabster.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kernelpanic.universitylabster.R;
-import com.kernelpanic.universitylabster.models.Course;
 import com.kernelpanic.universitylabster.viewmodels.DetailsViewModel;
 import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
-import java.util.StringJoiner;
 import java.util.StringTokenizer;
 
 import butterknife.BindView;
