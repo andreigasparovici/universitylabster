@@ -1,13 +1,11 @@
 package com.kernelpanic.universitylabster;
 
 import android.app.TimePickerDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -17,9 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.security.SecureRandom;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -100,10 +96,17 @@ public class AddCourseActivity extends AppCompatActivity {
 
         long date = System.currentTimeMillis();
 
+        final String
+                teacher = editTeacher.getText().toString(),
+                location = editLocation.getText().toString(),
+                name = editName.getText().toString();
+
+        boolean ok = true;
+        if(name.length()<5){ok=false;editName.setError("Invalid");}
         Map<String, Object> data = new HashMap<>();
-        data.put("teacher", editTeacher.getText().toString());
-        data.put("location", editLocation.getText().toString());
-        data.put("name", editName.getText().toString());
+        data.put("teacher", teacher);
+        data.put("location", location);
+        data.put("name", name);
         data.put("time", viewStart.getText().toString() + "-" + viewStop.getText().toString());
         data.put("day", dayIndex);
         data.put("up", 0);
@@ -117,7 +120,7 @@ public class AddCourseActivity extends AppCompatActivity {
         notification.put("teacher", editTeacher.getText().toString());
         notification.put("location", editLocation.getText().toString());
         notification.put("name", editName.getText().toString());
-        notification.put("time", viewStart.getText().toString() + "-" + viewStart.getText().toString());
+        notification.put("time", viewStart.getText().toString() + "-" + viewStop.getText().toString());
         notification.put("id", String.valueOf(randomShit));
         notification.put("user_id",  user.getUid());
         notification.put("date", date);
