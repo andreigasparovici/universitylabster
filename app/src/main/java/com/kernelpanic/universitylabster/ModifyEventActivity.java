@@ -49,6 +49,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         reference.child("teacher").setValue(teacherName.getText().toString());
         reference.child("year").setValue(Integer.valueOf(year.getText().toString()));
         reference.child("day").setValue(Integer.valueOf(year.getText().toString()));
+        reference.child("up").setValue(0);
         Toast.makeText(ModifyEventActivity.this, "Modificat", Toast.LENGTH_SHORT).show();
     }
 
