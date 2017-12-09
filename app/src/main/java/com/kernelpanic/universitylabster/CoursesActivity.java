@@ -118,14 +118,15 @@ public class CoursesActivity extends AppCompatActivity {
         courseList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?>adapter, View v, int position, long x){
-                Course item = (Course)adapter.getItemAtPosition(position);
+            Course item = (Course)adapter.getItemAtPosition(position);
 
-                Intent intent = new Intent(CoursesActivity.this, DetailsActivity.class);
-                Bundle b = new Bundle();
-                b.putInt("course", item.id);
+            Intent intent = new Intent(CoursesActivity.this, DetailsActivity.class);
+            Bundle b = new Bundle();
+            b.putInt("course", item.id);
+            b.putBoolean("enables", item.up >= 5);
 
-                intent.putExtras(b);
-                startActivity(intent);
+            intent.putExtras(b);
+            startActivity(intent);
             }
         });
 

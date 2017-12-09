@@ -25,7 +25,7 @@ public class ActionReciver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
 
-        Toast.makeText(context,"recieved",Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(context,"recieved",Toast.LENGTH_SHORT).show();
         String action=intent.getStringExtra("action");
 
         final String id = intent.getStringExtra("id");

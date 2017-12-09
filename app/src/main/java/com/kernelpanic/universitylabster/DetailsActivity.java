@@ -1,10 +1,14 @@
 package com.kernelpanic.universitylabster;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.models.Note;
 
 import java.util.ArrayList;
 
@@ -32,6 +37,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.userList)
     ListView userList;
+
+    @BindView(R.id.checkInButton)
+    Button checkInButton;
 
     @OnClick(R.id.checkInButton)
     void checkIn() {
@@ -59,7 +67,20 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     int courseId = -1;
+    boolean enabled = true;
 
+    @BindView(R.id.notesButton)
+    Button notesButton;
+
+    @OnClick(R.id.notesButton)
+    void gotToNotes() {
+        Intent intent = new Intent(DetailsActivity.this, NotesActivity.class);
+        Bundle b = new Bundle();
+        b.putString("course_id", String.valueOf(courseId));
+
+        intent.putExtras(b);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +88,20 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Bundle b = getIntent().getExtras();
-        if(b != null) courseId = b.getInt("course");
-
         ButterKnife.bind(this);
+
+        Bundle b = getIntent().getExtras();
+        if(b != null) {
+            courseId = b.getInt("course");
+            enabled = b.getBoolean("enabled");
+        }
+
+        if(!enabled) {
+            notesButton.setEnabled(false);
+            checkInButton.setEnabled(false);
+        }
+
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -96,6 +127,7 @@ public class DetailsActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) { }
         });
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

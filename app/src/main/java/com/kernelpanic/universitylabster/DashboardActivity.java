@@ -99,6 +99,7 @@ public class DashboardActivity extends AppCompatActivity {
                     children.add(child.getValue(Notification.class));
 
                 Collections.sort(children, new NotificationComparator());
+                Collections.reverse(children);
 
                 Notification last = children.size() >= 1 ? children.get(children.size() - 1) : null;
 
