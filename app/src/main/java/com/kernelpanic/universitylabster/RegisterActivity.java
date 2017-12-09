@@ -1,8 +1,8 @@
 package com.kernelpanic.universitylabster;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.EditText;
 
@@ -76,6 +76,17 @@ public class RegisterActivity extends AppCompatActivity {
             section = editSection.getText().toString(),
             group = editGroup.getText().toString(),
             subGroup = editSubGroup.getText().toString();
+
+        Boolean ok=true;
+        if(email.length()<5){ok=false;editEmail.setError("Invalid");}
+        if(password.length()<5){ok=false;editPassword.setError("Invalid");}
+        if(name.length()<5){ok=false;editName.setError("Invalid");}
+        if(faculty.length()<5){ok=false;editFaculty.setError("Invalid");}
+        if(year.length()>1){ok=false;editYear.setError("Invalid");}
+        if(section.length()<5){ok=false;editSection.setError("Invalid");}
+        if(group.length()<5){ok=false;editGroup.setError("Invalid");}
+        if(subGroup.length()<5){ok=false;editSubGroup.setError("Invalid");}
+        if(!ok)return;
 
         final MaterialDialog dialog = new MaterialDialog.Builder(this)
             .content("Vă rugăm aşteptaţi")
