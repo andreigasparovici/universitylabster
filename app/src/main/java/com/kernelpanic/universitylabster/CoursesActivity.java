@@ -42,7 +42,7 @@ public class CoursesActivity extends AppCompatActivity {
 
     @OnClick(R.id.addCourseButton)
     void addCourse() {
-        Intent intent = new Intent(CoursesActivity.this, AddCourseActivity.class);
+        Intent intent = new Intent(CoursesActivity.this, AddEventActivity.class);
         Bundle b = new Bundle();
         b.putInt("day", getIndex(day));
         intent.putExtras(b);

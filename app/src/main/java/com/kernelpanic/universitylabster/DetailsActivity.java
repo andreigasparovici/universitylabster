@@ -37,7 +37,7 @@ public class DetailsActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new DetailsFragment(), "Detalii");
         adapter.addFragment(new AttendanceFragment(), "Prezenţă");
-        adapter.addFragment(new MaterialsFragment(), "Materiale");
+        adapter.addFragment(new MaterialsFragment(), "Mesaje");
         viewPager.setAdapter(adapter);
     }
 

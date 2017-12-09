@@ -10,6 +10,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kernelpanic.universitylabster.DashboardActivity;
 import com.kernelpanic.universitylabster.models.Event;
 
 /**
@@ -47,9 +48,10 @@ public class ActionReciver extends BroadcastReceiver {
         }
         if(action.equals("decline")){
             declineCourse();
+            DashboardActivity.cancelNotification(id);
         }
 
-       // DashboardActivity.cancelNotification(id);
+        else DashboardActivity.cancelNotification(id);
 
         //This is used to close the notification tray
         Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);

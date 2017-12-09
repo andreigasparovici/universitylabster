@@ -9,6 +9,6 @@ public class NewEventNotification {
     public String name;
     public String location;
     public String teacher;
-    public String userId;
+    public String user_id;
     public long date;
 }

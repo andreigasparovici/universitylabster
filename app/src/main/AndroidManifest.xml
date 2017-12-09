@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kernelpanic.universitylabster">
 
-    <uses-permission android:name="android.permission.READ_CALENDAR"/>
-    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -24,11 +24,11 @@
         <activity android:name=".DetailsActivity" />
         <activity android:name=".NotesActivity" />
         <activity android:name=".CoursesActivity" />
-        <activity android:name=".AddCourseActivity"></activity>
+        <activity android:name=".AddEventActivity" />
 
-        <receiver android:name=".utilities.ActionReciver"/>
+        <receiver android:name=".utilities.ActionReciver" />
+
+        <activity android:name=".ModifyEventActivity"></activity>
     </application>
-
-
 
 </manifest>

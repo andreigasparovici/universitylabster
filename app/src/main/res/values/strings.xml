@@ -4,13 +4,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-        <string-array name="days_array">
-            <item>Luni</item>
-            <item>Marţi</item>
-            <item>Miercuri</item>
-            <item>Joi</item>
-            <item>Vineri</item>
-        </string-array>
+    <string-array name="days_array">
+        <item>Luni</item>
+        <item>Marţi</item>
+        <item>Miercuri</item>
+        <item>Joi</item>
+        <item>Vineri</item>
+    </string-array>
 
     <string-array name="navbar_items">
         <item>Detalii</item>

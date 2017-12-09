@@ -8,15 +8,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.kernelpanic.universitylabster.ModifyEventActivity;
 import com.kernelpanic.universitylabster.R;
 import com.kernelpanic.universitylabster.viewmodels.DetailsViewModel;
 import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import butterknife.BindView;
@@ -41,7 +54,14 @@ public class DetailsFragment extends Fragment {
     @BindView(R.id.imageView)
     ImageView imageView;
 
+    @OnClick(R.id.buttonModify)
+    void modifyEvent(){
+        startActivity(new Intent(DetailsFragment.this.getContext(), ModifyEventActivity.class));
+    }
+
     String location;
+
+    FirebaseUser user;
 
     @OnClick(R.id.imageView)
     void goToGmaps() {
@@ -54,9 +74,27 @@ public class DetailsFragment extends Fragment {
     private DetailsViewModel viewModel;
 
     void populateData() {
+        final String[] year = {""};
+        final String[] section = {""};
         courseName.setText(String.format("Nume: %s", DetailsViewModel.course.name));
         courseTeacher.setText(String.format("Profesor: %s", DetailsViewModel.course.teacher));
         courseLocation.setText(String.format("Locaţie: %s", DetailsViewModel.course.location));
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+        Query query = ref.orderByKey().equalTo(user.getUid());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, Object> data = (HashMap<String, Object>)dataSnapshot.getValue();
+                //year[0] =data.get("year").toString();
+                //section[0] =data.get("section").toString();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         String path = "https://maps.googleapis.com/maps/api/staticmap?size=800x800&center=";
         //path += DetailsViewModel.course.location.spAula+Sergiu+Chiriacescu
@@ -84,9 +122,12 @@ public class DetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.details_fragment, container, false);
         ButterKnife.bind(this, view);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
         //viewModel = ViewModelProviders.of(getActivity()).get(DetailsViewModel.class);
         populateData();
 
         return view;
     }
+
 }

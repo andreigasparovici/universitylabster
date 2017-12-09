@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.Manifest;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,6 +52,8 @@ public class DashboardActivity extends AppCompatActivity {
             return (int)(n1.date - n2.date) % Integer.MAX_VALUE;
         }
     }
+
+    public static Context context;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
@@ -134,6 +137,8 @@ public class DashboardActivity extends AppCompatActivity {
         firebaseInit();
         uiInit();
 
+        context = this;
+
         notificationReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -147,18 +152,16 @@ public class DashboardActivity extends AppCompatActivity {
 
                 NewEventNotification last = children.size() >= 1 ? children.get(0) : null;
 
-                if(last == null) return;
-                if(FirebaseAuth.getInstance().getCurrentUser() == null)
-                    return;
-
-                if(last.userId == null) return;
-
-                if(last.userId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) return;
+               if(last == null) return;
 
                 SharedPreferences prefs = getSharedPreferences("last_notification", MODE_PRIVATE);
                 String lastNotifiedId = prefs.getString("last_id", null);
 
                 if(last.id.equals(lastNotifiedId)) return;
+
+                if(last.user_id.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) return;
+
+                Log.e("penis", lastNotifiedId);
 
                 Intent acceptIntent = new Intent(DashboardActivity.this, ActionReciver.class);
                 Intent declineIntent = new Intent(DashboardActivity.this, ActionReciver.class);
@@ -166,13 +169,14 @@ public class DashboardActivity extends AppCompatActivity {
                 acceptIntent.putExtra("action","1");
                 acceptIntent.putExtra("id", String.valueOf(last.id));
                 declineIntent.putExtra("action","decline");
+                declineIntent.putExtra("id", String.valueOf(last.id));
 
                 final PendingIntent piAccept = PendingIntent.getBroadcast(DashboardActivity.this, 1, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 final PendingIntent piDecline = PendingIntent.getBroadcast(DashboardActivity.this, 0, declineIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                 mBuilder = new NotificationCompat.Builder(DashboardActivity.this);
                 mBuilder.setSmallIcon(R.drawable.man_thinking);
-                mBuilder.setContentTitle("Aproba/Refuza curs");
+                mBuilder.setContentTitle("Aproba/Ignora laborator/curs");
                 mBuilder.setOngoing(false);
                 mBuilder.setAutoCancel(true);
                 mBuilder.setPriority(android.app.Notification.PRIORITY_DEFAULT);
@@ -180,9 +184,9 @@ public class DashboardActivity extends AppCompatActivity {
                 mBuilder.setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(last.name + " " + last.location + "(" + last.location + ")"));
                 mBuilder.addAction(R.drawable.ic_launcher_foreground,
-                        "Accept", piAccept);
+                        "Aprob", piAccept);
                 mBuilder.addAction(R.drawable.ic_launcher_foreground,
-                        "Decline", piDecline);
+                        "Ignore", piDecline).setVisibility(View.GONE);
 
                 NotificationManager mNotifyMgr =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -285,9 +289,9 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-    /*public static void cancelNotification(String id) {
+    public static void cancelNotification(String id) {
         int idNotificare = Integer.valueOf(id);
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(idNotificare);
-    }*/
+    }
 }
