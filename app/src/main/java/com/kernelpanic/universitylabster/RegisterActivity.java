@@ -3,8 +3,10 @@ package com.kernelpanic.universitylabster;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -64,6 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     @BindView(R.id.editContact)
     EditText editContact;
+
+
 
     @OnClick(R.id.registerButton)
     void doRegister() {
