@@ -104,7 +104,6 @@ public class DashboardActivity extends AppCompatActivity {
                 Notification last = children.size() >= 1 ? children.get(children.size() - 1) : null;
 
                 if(last == null) return;
-
                 if(last.user_id.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) return;
 
 
@@ -123,20 +122,19 @@ public class DashboardActivity extends AppCompatActivity {
                 final PendingIntent piAccept = PendingIntent.getBroadcast(DashboardActivity.this, 1, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 final PendingIntent piDecline = PendingIntent.getBroadcast(DashboardActivity.this, 0, declineIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                mBuilder =
-                        new NotificationCompat.Builder(DashboardActivity.this)
-                                .setSmallIcon(R.drawable.man_thinking)
-                                .setContentTitle("Aproba/Refuza curs")
-                                .setOngoing(false)
-                                .setAutoCancel(true)
-                                .setPriority(android.app.Notification.PRIORITY_DEFAULT)
-                                .setDefaults(android.app.Notification.DEFAULT_ALL)
-                                .setStyle(new NotificationCompat.BigTextStyle()
-                                        .bigText(last.name))
-                                .addAction(R.drawable.ic_launcher_foreground,
-                                        "Accept", piAccept)
-                                .addAction (R.drawable.ic_launcher_foreground,
-                                        "Decline", piDecline);
+                mBuilder = new NotificationCompat.Builder(DashboardActivity.this);
+                mBuilder.setSmallIcon(R.drawable.man_thinking);
+                mBuilder.setContentTitle("Aproba/Refuza curs");
+                mBuilder.setOngoing(false);
+                mBuilder.setAutoCancel(true);
+                mBuilder.setPriority(android.app.Notification.PRIORITY_DEFAULT);
+                mBuilder.setDefaults(android.app.Notification.DEFAULT_ALL);
+                mBuilder.setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(last.name + " " + last.location + "(" + last.location + ")"));
+                mBuilder.addAction(R.drawable.ic_launcher_foreground,
+                        "Accept", piAccept);
+                mBuilder.addAction(R.drawable.ic_launcher_foreground,
+                        "Decline", piDecline);
 
                 NotificationManager mNotifyMgr =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

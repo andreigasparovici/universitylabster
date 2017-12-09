@@ -29,7 +29,7 @@ public class WeekFragment extends Fragment {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-    DatabaseReference reference = database.getReference("courses");
+//    DatabaseReference reference = database.getReference("courses");
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {

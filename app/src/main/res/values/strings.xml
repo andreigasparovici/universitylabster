@@ -11,4 +11,10 @@
             <item>Joi</item>
             <item>Vineri</item>
         </string-array>
+
+    <string-array name="navbar_items">
+        <item>Detalii</item>
+        <item>Prezenţă</item>
+        <item>Materiale</item>
+    </string-array>
 </resources>

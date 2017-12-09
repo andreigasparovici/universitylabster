@@ -58,11 +58,6 @@ public class ActionReciver extends BroadcastReceiver {
         context.sendBroadcast(it);
     }
 
-    public void acceptCourse(){
-        Log.e("course", "accepted");
-        // TODO: shusta
-    }
-
     public void declineCourse(){
         Log.e("course", "denied");
     }

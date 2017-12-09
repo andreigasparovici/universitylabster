@@ -61,56 +61,56 @@ public class RegisterActivity extends AppCompatActivity {
     @OnClick(R.id.registerButton)
     void doRegister() {
         final String
-                email = editEmail.getText().toString(),
-                password = editPassword.getText().toString(),
-                name = editName.getText().toString(),
-                faculty = editFaculty.getText().toString(),
-                year = editYear.getText().toString(),
-                section = editSection.getText().toString(),
-                group = editGroup.getText().toString(),
-                subGroup = editSubGroup.getText().toString();
+            email = editEmail.getText().toString(),
+            password = editPassword.getText().toString(),
+            name = editName.getText().toString(),
+            faculty = editFaculty.getText().toString(),
+            year = editYear.getText().toString(),
+            section = editSection.getText().toString(),
+            group = editGroup.getText().toString(),
+            subGroup = editSubGroup.getText().toString();
 
         final MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .content("Vă rugăm aşteptaţi")
-                .progress(true, 0)
-                .show();
+            .content("Vă rugăm aşteptaţi")
+            .progress(true, 0)
+            .show();
 
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            final FirebaseUser user = firebaseAuth.getCurrentUser();
-                            UserProfileChangeRequest profileUpdates =
-                                    new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(name).build();
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    final FirebaseUser user = firebaseAuth.getCurrentUser();
+                    UserProfileChangeRequest profileUpdates =
+                        new UserProfileChangeRequest.Builder()
+                        .setDisplayName(name).build();
 
-                            user.updateProfile(profileUpdates)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
+                    user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
 
-                                                Map<String, String> data = new HashMap<>();
-                                                data.put("faculty", faculty);
-                                                data.put("year", year);
-                                                data.put("section", section);
-                                                data.put("group", group);
-                                                data.put("subGroup", subGroup);
+                                Map<String, String> data = new HashMap<>();
+                                data.put("faculty", faculty);
+                                data.put("year", year);
+                                data.put("section", section);
+                                data.put("group", group);
+                                data.put("subGroup", subGroup);
 
-                                                reference.child(user.getUid()).setValue(data);
-                                                dialog.dismiss();
-                                            } else {
-                                                dialog.dismiss();
-                                            }
-                                        }
-                                    });
-                        } else {
-                            dialog.dismiss();
-                        }
-                    }
-                });
+                                reference.child(user.getUid()).setValue(data);
+                                dialog.dismiss();
+                            } else {
+                                dialog.dismiss();
+                            }
+                            }
+                        });
+                } else {
+                    dialog.dismiss();
+                }
+                }
+            });
     }
 
     @Override

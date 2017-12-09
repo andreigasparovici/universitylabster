@@ -1,5 +1,6 @@
 package com.kernelpanic.universitylabster;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kernelpanic.universitylabster.fragments.WeekFragment;
 import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.viewmodels.DetailsViewModel;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class CoursesActivity extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference reference = database.getReference("courses");
+    DetailsViewModel viewModel;
 
     int getIndex(String day) {
         List<String> d = Arrays.asList(WeekAdapter.days);
@@ -62,6 +65,8 @@ public class CoursesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
+
+        //viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
 
         ButterKnife.bind(this);
 
@@ -95,6 +100,8 @@ public class CoursesActivity extends AppCompatActivity {
                     for (DataSnapshot course : dataSnapshot.getChildren()) {
 
                         Course c = course.getValue(Course.class);
+                        if(c == null) continue;
+
                         c.id = Integer.valueOf(course.getKey());
                         Log.e("DEBUG", String.valueOf(c.id));
                         if (c.day == getIndex(day))
@@ -118,15 +125,19 @@ public class CoursesActivity extends AppCompatActivity {
         courseList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?>adapter, View v, int position, long x){
-            Course item = (Course)adapter.getItemAtPosition(position);
+                Course item = (Course)adapter.getItemAtPosition(position);
 
-            Intent intent = new Intent(CoursesActivity.this, DetailsActivity.class);
-            Bundle b = new Bundle();
-            b.putInt("course", item.id);
-            b.putBoolean("enables", item.up >= 5);
+                Intent intent = new Intent(CoursesActivity.this, DetailsActivity.class);
+                //Bundle b = new Bundle();
 
-            intent.putExtras(b);
-            startActivity(intent);
+                viewModel.course = item;
+                viewModel.courseId = item.id;
+                //DetailsViewModel.courseId = item.id;
+
+                b.putBoolean("enabled", item.up >= 5);
+
+                //intent.putExtras(b);
+                startActivity(intent);
             }
         });
 

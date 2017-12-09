@@ -1,7 +1,5 @@
 package com.kernelpanic.universitylabster.models;
 
-import java.util.Date;
-
 /**
  * Created by andrei on 09.12.2017.
  */

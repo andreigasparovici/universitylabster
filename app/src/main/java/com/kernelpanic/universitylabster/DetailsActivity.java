@@ -1,85 +1,78 @@
 package com.kernelpanic.universitylabster;
 
-import android.content.Intent;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.kernelpanic.universitylabster.fragments.AttendanceFragment;
+import com.kernelpanic.universitylabster.fragments.DetailsFragment;
+import com.kernelpanic.universitylabster.fragments.MaterialsFragment;
 import com.kernelpanic.universitylabster.models.Course;
-import com.kernelpanic.universitylabster.models.Note;
+import com.kernelpanic.universitylabster.viewmodels.DetailsViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import butterknife.BindDimen;
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+
+class ViewPagerAdapter extends FragmentPagerAdapter {
+    private final List<Fragment> mFragmentList = new ArrayList<>();
+    private final List<String> mFragmentTitleList = new ArrayList<>();
+
+    public ViewPagerAdapter(FragmentManager manager) {
+        super(manager);
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        return mFragmentList.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return mFragmentList.size();
+    }
+
+    public void addFragment(Fragment fragment, String title) {
+        mFragmentList.add(fragment);
+        mFragmentTitleList.add(title);
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return mFragmentTitleList.get(position);
+    }
+}
 
 public class DetailsActivity extends AppCompatActivity {
 
-    private DatabaseReference databaseReference;
+    private DetailsViewModel viewModel;
 
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser firebaseUser;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
-    @BindView(R.id.userList)
-    ListView userList;
+    private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-    @BindView(R.id.checkInButton)
-    Button checkInButton;
-
-    @OnClick(R.id.checkInButton)
-    void checkIn() {
-        FirebaseDatabase.getInstance().getReference("attendance").child(String.valueOf(courseId))
-                .child(firebaseUser.getUid())
-                .setValue(firebaseUser.getDisplayName());
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-
-                    ArrayList<String> result = new ArrayList<>();
-                    for (DataSnapshot user : dataSnapshot.getChildren()) {
-                        result.add(user.getValue(String.class));
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter(DetailsActivity.this, android.R.layout.simple_list_item_1, result);
-                    userList.setAdapter(adapter);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) { }
-        });
-    }
-
-    int courseId = -1;
-    boolean enabled = true;
-
-    @BindView(R.id.notesButton)
-    Button notesButton;
-
-    @OnClick(R.id.notesButton)
-    void gotToNotes() {
-        Intent intent = new Intent(DetailsActivity.this, NotesActivity.class);
-        Bundle b = new Bundle();
-        b.putString("course_id", String.valueOf(courseId));
-
-        intent.putExtras(b);
-        startActivity(intent);
+    void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new DetailsFragment(), "Detalii");
+        adapter.addFragment(new AttendanceFragment(), "Prezenţă");
+        adapter.addFragment(new MaterialsFragment(), "Materiale");
+        viewPager.setAdapter(adapter);
     }
 
     @Override
@@ -90,42 +83,55 @@ public class DetailsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Bundle b = getIntent().getExtras();
-        if(b != null) {
-            courseId = b.getInt("course");
-            enabled = b.getBoolean("enabled");
-        }
+        //viewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
 
-        if(!enabled) {
-            notesButton.setEnabled(false);
-            checkInButton.setEnabled(false);
-        }
+        viewPager = findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
 
+        tabLayout = findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            //courseId = bundle.getInt("course");
+            //viewModel.courseId = courseId;
+            Query query = reference.child("courses").orderByKey().equalTo(String.valueOf(viewModel.courseId));
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        int id = -1;
+                        for (DataSnapshot course : dataSnapshot.getChildren()) {
+                            if(course != null) {
+                                viewModel.course = course.getValue(Course.class);
+                                id = course.getValue(Course.class).id;
+                                break;
+                            }
+                        }
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
+                        Query query2 = reference.child("attendance").child(String.valueOf(id));//.orderByKey().equalTo(String.valueOf(item.id));
+                        query2.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()) {
+                                    List<String> users = new ArrayList<>();
+                                    for (DataSnapshot user : dataSnapshot.getChildren()) {
+                                        users.add(user.getKey());
+                                    }
+                                    viewModel.attendance  = users;
+                                }
+                            }
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("attendance").child(String.valueOf(courseId));
-
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-
-                    ArrayList<String> result = new ArrayList<>();
-                    for (DataSnapshot user : dataSnapshot.getChildren()) {
-                        result.add(user.getValue(String.class));
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {}
+                        });
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter(DetailsActivity.this, android.R.layout.simple_list_item_1, result);
-                    userList.setAdapter(adapter);
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) { }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+        }
     }
 
 
@@ -139,4 +145,5 @@ public class DetailsActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }
