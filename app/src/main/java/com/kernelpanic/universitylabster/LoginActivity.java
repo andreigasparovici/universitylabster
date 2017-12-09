@@ -2,11 +2,16 @@ package com.kernelpanic.universitylabster;
 
 import android.content.Context;
 import android.content.Intent;
+<<<<<<< HEAD
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+=======
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+>>>>>>> f9fece6cb83e71827833b5ca4c6e3ff7b903b5ee
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+<<<<<<< HEAD
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -23,6 +29,8 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+=======
+>>>>>>> f9fece6cb83e71827833b5ca4c6e3ff7b903b5ee
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -75,24 +83,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .show();
 
         firebaseAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-
-                Log.d("DEBUG", "HERE AGAIN");
-
+            .addOnCompleteListener(this, (task) -> {
                 dialog.dismiss();
-
                 if (task.isSuccessful()) {
                     startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Datele de autentificare sunt incorecte!", Toast.LENGTH_SHORT).show();
                 }
-                }
             });
     }
 
+<<<<<<< HEAD
+=======
+    public void goToRegister(View view) {
+        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+    }
+
+>>>>>>> f9fece6cb83e71827833b5ca4c6e3ff7b903b5ee
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

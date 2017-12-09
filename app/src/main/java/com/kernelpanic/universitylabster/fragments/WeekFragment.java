@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kernelpanic.universitylabster.CoursesActivity;
 import com.kernelpanic.universitylabster.R;
-import com.kernelpanic.universitylabster.WeekAdapter;
+import com.kernelpanic.universitylabster.adapters.WeekAdapter;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,33 +29,28 @@ public class WeekFragment extends Fragment {
     @BindView(R.id.courseList)
     ListView courseList;
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-//    DatabaseReference reference = database.getReference("courses");
-
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.week_fragment, container, false);
 
+        List<String> days = Arrays.asList("Luni", "Marţi", "Miercuri", "Joi", "Vineri");
+
+
         ButterKnife.bind(this, root);
 
-        courseList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?>adapter,View v, int position, long x){
-                String item = adapter.getItemAtPosition(position).toString();
+        courseList.setOnItemClickListener((adapter, v, position, x) -> {
+            String item = adapter.getItemAtPosition(position).toString();
 
-                Intent intent = new Intent(WeekFragment.this.getActivity(), CoursesActivity.class);
-                Bundle b = new Bundle();
-                b.putString("day", item);
-                intent.putExtras(b);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(WeekFragment.this.getActivity(), CoursesActivity.class);
+            Bundle b = new Bundle();
+            b.putString("day", item);
+            intent.putExtras(b);
+            startActivity(intent);
         });
 
         final WeekAdapter adapter = new WeekAdapter(WeekFragment.this.getContext());
         courseList.setAdapter(adapter);
-
 
         return root;
     }

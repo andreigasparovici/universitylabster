@@ -1,6 +1,5 @@
 package com.kernelpanic.universitylabster.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kernelpanic.universitylabster.R;
-import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.models.Event;
 import com.kernelpanic.universitylabster.viewmodels.DetailsViewModel;
 
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class AttendanceFragment extends Fragment {
                         viewModel.attendance.toArray(new String[viewModel.attendance.size()]));
         attendanceList.setAdapter(adapter);
 
-        Course item = viewModel.course;
+        Event item = viewModel.course;
         if(item.up >= 5)
             checkInButton.setEnabled(true);
     }
@@ -88,7 +87,6 @@ public class AttendanceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.attendance_fragment, container, false);
-       // viewModel = ViewModelProviders.of(getActivity()).get(DetailsViewModel.class);
 
         ButterKnife.bind(this, view);
 

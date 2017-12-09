@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.kernelpanic.universitylabster"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -46,5 +46,10 @@ dependencies {
     compile 'com.google.gms:google-services:3.1.2'
     compile 'com.google.android.gms:play-services-auth:11.6.0'
     compile 'com.afollestad.material-dialogs:commons:0.9.6.0'
+
+    compile 'com.karumi:dexter:4.2.0'
+
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
 }
 apply plugin: 'com.google.gms.google-services'

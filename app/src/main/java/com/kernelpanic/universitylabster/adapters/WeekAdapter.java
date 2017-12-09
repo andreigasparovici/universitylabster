@@ -1,13 +1,16 @@
-package com.kernelpanic.universitylabster;
+package com.kernelpanic.universitylabster.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.kernelpanic.universitylabster.R;
 
 import java.util.Date;
 
@@ -16,14 +19,14 @@ import java.util.Date;
  */
 
 public class WeekAdapter extends ArrayAdapter<String>{
-    public static String[] days = new String[]{"Luni", "Marţi", "Miercuri", "Joi", "Vineri"};
+    public static String[] days = new String[]{ "Luni", "Marţi", "Miercuri", "Joi", "Vineri" };
 
     public WeekAdapter(Context context) {
         super(context, 0, days);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         String day = getItem(position);
 
         if (convertView == null) {
@@ -33,18 +36,10 @@ public class WeekAdapter extends ArrayAdapter<String>{
 
         dayView.setText(day);
 
-//        Date date = new Date();
-//
-//        Log.e("DATEBUG", String.valueOf(date.getDay()) + " " +String.valueOf(position));
-//
-//        if(date.getDay() == position) {
-//            convertView.setBackgroundColor(Color.rgb(152,251,152));
-//        }
-
         return convertView;
     }
 
-    public String getItem(int x) {
-        return days[x];
+    public String getItem(int index) {
+        return days[index];
     }
 }

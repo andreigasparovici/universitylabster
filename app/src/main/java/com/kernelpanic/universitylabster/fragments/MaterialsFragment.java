@@ -1,15 +1,13 @@
 package com.kernelpanic.universitylabster.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.arch.lifecycle.ViewModel;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,9 +19,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kernelpanic.universitylabster.NoteAdapter;
+import com.kernelpanic.universitylabster.adapters.MessageAdapter;
 import com.kernelpanic.universitylabster.R;
-import com.kernelpanic.universitylabster.models.Note;
+import com.kernelpanic.universitylabster.models.Message;
 import com.kernelpanic.universitylabster.viewmodels.DetailsViewModel;
 
 import java.util.ArrayList;
@@ -42,14 +40,12 @@ import butterknife.ButterKnife;
 
 public class MaterialsFragment extends Fragment {
 
-    class NoteComparator implements Comparator<Note> {
+    class NoteComparator implements Comparator<Message> {
         @Override
-        public int compare(Note n1, Note n2) {
+        public int compare(Message n1, Message n2) {
             return (int)(n1.time - n2.time) % Integer.MAX_VALUE;
         }
     }
-
-    private DetailsViewModel viewModel;
 
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("notes");
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -64,41 +60,42 @@ public class MaterialsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.material_fragment, container, false);
-       // viewModel = ViewModelProviders.of(getActivity()).get(DetailsViewModel.class);
 
         ButterKnife.bind(this, view);
 
-        userMessage.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+        userMessage.setEnabled(false);
 
-                    Map<String, Object> message = new HashMap<>();
-                    message.put("time", System.currentTimeMillis());
-                    message.put("user", user.getDisplayName());
-                    message.put("message", userMessage.getText().toString());
+        if(DetailsViewModel.course.up >= 5)
+            userMessage.setEnabled(true);
 
-                    String id = String.valueOf(ThreadLocalRandom.current().nextInt(0, 2000000000));
-                    databaseReference.child(String.valueOf(viewModel.courseId)).child(id).setValue(message);
-                    userMessage.setText("");
+        userMessage.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                    return true;
-                }
-                return false;
+                Map<String, Object> message = new HashMap<>();
+                message.put("time", System.currentTimeMillis());
+                message.put("user", user.getDisplayName());
+                message.put("message", userMessage.getText().toString());
+
+                String id = String.valueOf(ThreadLocalRandom.current().nextInt(0, 2000000000));
+                databaseReference.child(String.valueOf(DetailsViewModel.courseId)).child(id).setValue(message);
+                userMessage.setText("");
+
+                return true;
             }
+            return false;
         });
 
-        databaseReference.child(String.valueOf(viewModel.courseId)).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(String.valueOf(DetailsViewModel.courseId)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<Note> notes = new ArrayList<>();
+                ArrayList<Message> notes = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    notes.add(child.getValue(Note.class));
+                    notes.add(child.getValue(Message.class));
                 }
                 Collections.sort(notes, new NoteComparator());
                 Collections.reverse(notes);
 
-                final NoteAdapter noteAdapter = new NoteAdapter(MaterialsFragment.this.getActivity(), notes);
+                final MessageAdapter noteAdapter = new MessageAdapter(MaterialsFragment.this.getActivity(), notes);
                 noteList.setAdapter(noteAdapter);
             }
 

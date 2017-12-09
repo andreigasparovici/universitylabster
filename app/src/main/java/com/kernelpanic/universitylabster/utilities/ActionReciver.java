@@ -1,18 +1,17 @@
-package com.kernelpanic.universitylabster;
+package com.kernelpanic.universitylabster.utilities;
 
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.kernelpanic.universitylabster.models.Course;
+import com.kernelpanic.universitylabster.DashboardActivity;
+import com.kernelpanic.universitylabster.models.Event;
 
 /**
  * Created by DragosTrett on 08.12.2017.
@@ -35,7 +34,7 @@ public class ActionReciver extends BroadcastReceiver {
             firebaseDatabase.getReference("courses").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Course course = dataSnapshot.getValue(Course.class);
+                    Event course = dataSnapshot.getValue(Event.class);
                     if(course == null) return;
 
                     firebaseDatabase.getReference("courses").child(id).child("up").setValue(Integer.valueOf(course.up)+ 1);
@@ -49,9 +48,10 @@ public class ActionReciver extends BroadcastReceiver {
         }
         if(action.equals("decline")){
             declineCourse();
+            DashboardActivity.cancelNotification(id);
         }
 
-        DashboardActivity.cancelNotification(id);
+        else DashboardActivity.cancelNotification(id);
 
         //This is used to close the notification tray
         Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
