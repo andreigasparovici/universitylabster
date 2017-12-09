@@ -3,6 +3,7 @@ package com.kernelpanic.universitylabster;
 import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -11,10 +12,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.security.SecureRandom;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -24,6 +29,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddCourseActivity extends AppCompatActivity {
+
+    FirebaseUser user;
 
     int dayIndex = -1;
 
@@ -89,15 +96,18 @@ public class AddCourseActivity extends AppCompatActivity {
     @OnClick(R.id.addCourseButton)
     void addCourse() {
         int randomShit = ThreadLocalRandom.current().nextInt(0, 10000000);
+        Log.e("RANDOM", String.valueOf(randomShit));
+
+        long date = System.currentTimeMillis();
 
         Map<String, Object> data = new HashMap<>();
         data.put("teacher", editTeacher.getText().toString());
         data.put("location", editLocation.getText().toString());
         data.put("name", editName.getText().toString());
-        data.put("time", viewStart.getText().toString() + "-" + viewStart.getText().toString());
+        data.put("time", viewStart.getText().toString() + "-" + viewStop.getText().toString());
         data.put("day", dayIndex);
         data.put("up", 0);
-
+        data.put("date", date);
 
         databaseReference.child(String.valueOf(randomShit)).setValue(data);
 
@@ -109,8 +119,10 @@ public class AddCourseActivity extends AppCompatActivity {
         notification.put("name", editName.getText().toString());
         notification.put("time", viewStart.getText().toString() + "-" + viewStart.getText().toString());
         notification.put("id", String.valueOf(randomShit));
-        firebaseDatabase.getReference("notifications").child(String.valueOf(randomShit)).setValue(notification);
+        notification.put("user_id",  user.getUid());
+        notification.put("date", date);
 
+        firebaseDatabase.getReference("notifications").child(String.valueOf(randomShit)).setValue(notification);
 
         Toast.makeText(AddCourseActivity.this, "Cursul a fost adăugat!", Toast.LENGTH_SHORT).show();
 
@@ -121,6 +133,8 @@ public class AddCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_course);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         ButterKnife.bind(this);
 

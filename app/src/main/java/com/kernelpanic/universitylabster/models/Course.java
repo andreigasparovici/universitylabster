@@ -15,4 +15,5 @@ public class Course {
     public String name;
     public String time;
     public int up;
+    public long date;
 }

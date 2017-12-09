@@ -45,16 +45,16 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    Log.d("DEBUG", "HERE AGAIN");
+                Log.d("DEBUG", "HERE AGAIN");
 
-                    dialog.dismiss();
+                dialog.dismiss();
 
-                    if (task.isSuccessful()) {
-                        startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Datele de autentificare sunt incorecte!", Toast.LENGTH_SHORT).show();
-                    }
+                if (task.isSuccessful()) {
+                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Datele de autentificare sunt incorecte!", Toast.LENGTH_SHORT).show();
+                }
                 }
             });
     }

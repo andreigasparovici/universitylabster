@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -32,6 +33,8 @@ import com.kernelpanic.universitylabster.models.Course;
 import com.kernelpanic.universitylabster.models.Notification;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +42,14 @@ import butterknife.OnClick;
 
 
 public class DashboardActivity extends AppCompatActivity {
+
+
+    class NotificationComparator implements Comparator<Notification> {
+        @Override
+        public int compare(Notification n1, Notification n2) {
+            return (int)(n1.date - n2.date) % Integer.MAX_VALUE;
+        }
+    }
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -87,9 +98,19 @@ public class DashboardActivity extends AppCompatActivity {
                 for(DataSnapshot child: dataSnapshot.getChildren())
                     children.add(child.getValue(Notification.class));
 
+                Collections.sort(children, new NotificationComparator());
+
                 Notification last = children.size() >= 1 ? children.get(children.size() - 1) : null;
 
                 if(last == null) return;
+
+                if(last.user_id.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) return;
+
+
+                SharedPreferences prefs = getSharedPreferences("last_notification", MODE_PRIVATE);
+                String lastNotifiedId = prefs.getString("last_id", null);
+
+                if(last.id.equals(lastNotifiedId)) return;
 
                 Intent acceptIntent = new Intent(DashboardActivity.this, ActionReciver.class);
                 Intent declineIntent = new Intent(DashboardActivity.this, ActionReciver.class);
@@ -119,6 +140,11 @@ public class DashboardActivity extends AppCompatActivity {
                 NotificationManager mNotifyMgr =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotifyMgr.notify(Integer.parseInt(last.id), mBuilder.build());
+                Log.e("NOTIFY", last.id);
+
+                SharedPreferences.Editor editor = getSharedPreferences("last_notification", MODE_PRIVATE).edit();
+                editor.putString("last_id", last.id);
+                editor.apply();
 
             }
             @Override
