@@ -6,11 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
-<<<<<<< HEAD:app/src/main/java/com/kernelpanic/universitylabster/AddCourseActivity.java
-=======
 import android.widget.RadioButton;
-import android.widget.SeekBar;
->>>>>>> f9fece6cb83e71827833b5ca4c6e3ff7b903b5ee:app/src/main/java/com/kernelpanic/universitylabster/AddEventActivity.java
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -114,29 +110,21 @@ public class AddEventActivity extends AppCompatActivity {
         long date = System.currentTimeMillis();
 
         final String
-                teacher = editTeacher.getText().toString(),
-                location = editLocation.getText().toString(),
-                name = editName.getText().toString();
+                teacher = editTeacher.getText().toString();
+        final String location = editLocation.getText().toString();
+        String name = editName.getText().toString();
 
         boolean ok = true;
         if(name.length()<5){ok=false;editName.setError("Invalid");}
         Map<String, Object> data = new HashMap<>();
-<<<<<<< HEAD:app/src/main/java/com/kernelpanic/universitylabster/AddCourseActivity.java
         data.put("teacher", teacher);
         data.put("location", location);
-=======
-        data.put("teacher", editTeacher.getText().toString());
-        data.put("location", editLocation.getText().toString());
-
-        String name = editName.getText().toString();;
 
         if(isCourse.isChecked()) {
             name = "Curs " + name;
         } else {
             name = "Laborator " + name;
         }
-
->>>>>>> f9fece6cb83e71827833b5ca4c6e3ff7b903b5ee:app/src/main/java/com/kernelpanic/universitylabster/AddEventActivity.java
         data.put("name", name);
         data.put("time", viewStart.getText().toString() + "-" + viewStop.getText().toString());
         data.put("day", dayIndex);
@@ -151,13 +139,8 @@ public class AddEventActivity extends AppCompatActivity {
         Map<String, Object> notification = new HashMap<>();
         notification.put("teacher", editTeacher.getText().toString());
         notification.put("location", editLocation.getText().toString());
-<<<<<<< HEAD:app/src/main/java/com/kernelpanic/universitylabster/AddCourseActivity.java
-        notification.put("name", editName.getText().toString());
-        notification.put("time", viewStart.getText().toString() + "-" + viewStop.getText().toString());
-=======
         notification.put("name", name);
         notification.put("time", viewStart.getText().toString() + "-" + viewStart.getText().toString());
->>>>>>> f9fece6cb83e71827833b5ca4c6e3ff7b903b5ee:app/src/main/java/com/kernelpanic/universitylabster/AddEventActivity.java
         notification.put("id", String.valueOf(randomShit));
         notification.put("user_id",  user.getUid());
         notification.put("date", date);
