@@ -214,8 +214,7 @@ public class CalendarOperations {
             calendars = Uri.parse("content://com.android.calendar/calendars");
             try {
                 managedCursor = act.managedQuery(calendars, null, null, null, null);
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { }
             if (managedCursor != null) {
                 calendarUriBase = "content://com.android.calendar/";
             }

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
@@ -36,11 +37,18 @@ import com.kernelpanic.universitylabster.fragments.WeekFragment;
 import com.kernelpanic.universitylabster.models.Event;
 import com.kernelpanic.universitylabster.models.NewEventNotification;
 import com.kernelpanic.universitylabster.utilities.ActionReciver;
+import com.kernelpanic.universitylabster.utilities.CalendarOperations;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -218,6 +226,40 @@ public class DashboardActivity extends AppCompatActivity {
                     if (c == null) continue;
                     if(c.up >= 5)
                     courses.add(c);
+                }
+
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(DashboardActivity.this);
+
+                for(Event event : courses) {
+                    int startHour, startMinute, endHour, endMinute;
+
+                    StringTokenizer strtok = new StringTokenizer(event.time, "-");
+                    String startTime = strtok.nextToken();
+                    String endTime = strtok.nextToken();
+
+                    strtok = new StringTokenizer(startTime, ":");
+                    startHour = Integer.valueOf(strtok.nextToken());
+                    startMinute = Integer.valueOf(strtok.nextToken());
+
+                    strtok = new StringTokenizer(endTime, ":");
+                    endHour = Integer.valueOf(strtok.nextToken());
+                    endMinute = Integer.valueOf(strtok.nextToken());
+
+                    if (!settings.contains(event.name)) {
+                        Long insertedId = CalendarOperations.getInstance().addEvent(
+                                DashboardActivity.this,
+                                DashboardActivity.context,
+                                new GregorianCalendar(new Date().getYear(), new Date().getMonth() - 1, new Date().getDate()),
+                                firebaseUser.getEmail(),
+                                event.location,
+                                event.name,
+                                event.teacher,
+                                startHour, startMinute, endHour, endMinute);
+
+                        SharedPreferences.Editor edit = settings.edit();
+                        edit.putString(event.name, String.valueOf(insertedId));
+                        edit.apply();
+                    }
                 }
 
                 /*AsyncTask.execute(new Runnable() {

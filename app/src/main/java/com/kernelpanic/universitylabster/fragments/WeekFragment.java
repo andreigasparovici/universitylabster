@@ -13,8 +13,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kernelpanic.universitylabster.CoursesActivity;
 import com.kernelpanic.universitylabster.R;
 import com.kernelpanic.universitylabster.adapters.WeekAdapter;
-import com.nightonke.boommenu.BoomButtons.HamButton;
-import com.nightonke.boommenu.BoomMenuButton;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,16 +34,7 @@ public class WeekFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.week_fragment, container, false);
 
-        /*BoomMenuButton bmb = root.findViewById(R.id.bmb);
-
-        String[] days = { "Luni", "Marţi", "Miercuri", "Joi", "Vineri", "Sâmbătă" };
-
-        for (int i = 0; i < 3; i++) {
-            HamButton.Builder builder = new HamButton.Builder()
-                    .normalText(days[i]);
-                   // .subNormalText("Little butter Doesn't fly, either!");
-            bmb.addBuilder(builder);
-        }*/
+        List<String> days = Arrays.asList("Luni", "Marţi", "Miercuri", "Joi", "Vineri");
 
 
         ButterKnife.bind(this, root);

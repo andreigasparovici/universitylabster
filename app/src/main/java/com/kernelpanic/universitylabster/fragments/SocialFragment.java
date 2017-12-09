@@ -72,7 +72,9 @@ public class SocialFragment extends Fragment {
                                 userContact = new ArrayList<>();
                                 for(DataSnapshot shot: dataSnapshot.getChildren()) {
                                     if(!shot.getKey().equals(user.getUid())
-                                            && !shot.child("name").getValue(String.class).equals(user.getDisplayName())) {
+                                            && (shot.child("name").getValue(String.class) != null) &&
+                                            (user.getDisplayName() != null) &&
+                                            !shot.child("name").getValue(String.class).equals(user.getDisplayName())) {
                                         users.add(shot.child("name").getValue(String.class));
                                         userContact.add(shot.child("contact").getValue(String.class));
                                     }
