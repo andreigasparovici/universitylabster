@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -252,13 +251,22 @@ public class DashboardActivity extends AppCompatActivity {
 
                     if (!settings.contains(event.name)) {
                         Long insertedId = addEvent(
-                            new GregorianCalendar(new Date().getYear(), new Date().getMonth() - 1, new Date().getDate()),
+                            //new GregorianCalendar(new Date().getYear(), new Date().getMonth() - 1, new Date().getDate())
+                                new GregorianCalendar(2017, 11, 10) ,
                             firebaseUser.getEmail(),
                             event.location,
                             event.name,
                             event.teacher,
                             startHour, startMinute, endHour, endMinute);
-
+                        Log.e("event", startHour+":"+startMinute+"  "+endHour+":"+endMinute);
+                        /*Long insertedId = addEvent(
+                                //new GregorianCalendar(new Date().getYear(), new Date().getMonth() - 1, new Date().getDate())
+                                new GregorianCalendar(2017, 11, 10) ,
+                                firebaseUser.getEmail(),
+                                event.location,
+                                event.name,
+                                event.teacher,
+                                04, 30, 06, 30);*/
 
 
                         SharedPreferences.Editor edit = settings.edit();
@@ -393,7 +401,7 @@ public class DashboardActivity extends AppCompatActivity {
         Uri uri =
                 getContentResolver().
                         insert(CalendarContract.Events.CONTENT_URI, values);
-        //Log.e("event", "created");
+        Log.e("event", "created");
         long eventId = new Long(uri.getLastPathSegment());
 
         Uri REMINDERS_URI = Uri.parse(getCalendarUriBase() + "reminders");
