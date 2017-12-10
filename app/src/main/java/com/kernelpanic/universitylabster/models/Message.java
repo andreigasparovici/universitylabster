@@ -6,6 +6,6 @@ package com.kernelpanic.universitylabster.models;
 
 public class Message {
     public String user;
-    public String content;
+    public String message;
     public long time;
 }

@@ -49,10 +49,10 @@ public class SocialFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 new MaterialDialog.Builder(SocialFragment.this.getContext())
-                            .title(users.get(i))
-                            .content(userContact.get(i))
-                            .positiveText("OK")
-                        .show();
+                    .title(users.get(i))
+                    .content(userContact.get(i))
+                    .positiveText("OK")
+                    .show();
             }
         });
 
@@ -62,31 +62,30 @@ public class SocialFragment extends Fragment {
                 String year = dataSnapshot.getValue(String.class);
 
                 FirebaseDatabase.getInstance().getReference("users").orderByChild("year").equalTo(year)
-                        .addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                users = new ArrayList<>();
-                                userContact = new ArrayList<>();
-                                for(DataSnapshot shot: dataSnapshot.getChildren()) {
-                                    if(!shot.getKey().equals(user.getUid())
-                                            && (shot.child("name").getValue(String.class) != null) &&
-                                            (user.getDisplayName() != null) &&
-                                            !shot.child("name").getValue(String.class).equals(user.getDisplayName())) {
-                                        users.add(shot.child("name").getValue(String.class));
-                                        userContact.add(shot.child("contact").getValue(String.class));
-                                    }
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            users = new ArrayList<>();
+                            userContact = new ArrayList<>();
+                            for(DataSnapshot shot: dataSnapshot.getChildren()) {
+                                if(!shot.getKey().equals(user.getUid())
+                                        && (shot.child("name").getValue(String.class) != null) &&
+                                        (user.getDisplayName() != null) &&
+                                        !shot.child("name").getValue(String.class).equals(user.getDisplayName())) {
+                                    users.add(shot.child("name").getValue(String.class));
+                                    userContact.add(shot.child("contact").getValue(String.class));
                                 }
-                                ArrayAdapter<String> adapter =
-                                        new ArrayAdapter<>(getActivity(),
-                                                android.R.layout.simple_list_item_1,
-                                                users.toArray(new String[users.size()]));
-                                userList.setAdapter(adapter);
                             }
+                            ArrayAdapter<String> adapter =
+                                new ArrayAdapter<>(getActivity(),
+                                    android.R.layout.simple_list_item_1,
+                                    users.toArray(new String[users.size()]));
+                            userList.setAdapter(adapter);
+                        }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {  }
-                        });
-
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {  }
+                    });
             }
 
             @Override

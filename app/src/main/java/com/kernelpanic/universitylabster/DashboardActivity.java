@@ -243,14 +243,14 @@ public class DashboardActivity extends AppCompatActivity {
 
                     if (!settings.contains(event.name)) {
                         Long insertedId = CalendarOperations.getInstance().addEvent(
-                                DashboardActivity.this,
-                                DashboardActivity.context,
-                                new GregorianCalendar(new Date().getYear(), new Date().getMonth() - 1, new Date().getDate()),
-                                firebaseUser.getEmail(),
-                                event.location,
-                                event.name,
-                                event.teacher,
-                                startHour, startMinute, endHour, endMinute);
+                            DashboardActivity.this,
+                            DashboardActivity.context,
+                            new GregorianCalendar(new Date().getYear(), new Date().getMonth() - 1, new Date().getDate()),
+                            firebaseUser.getEmail(),
+                            event.location,
+                            event.name,
+                            event.teacher,
+                            startHour, startMinute, endHour, endMinute);
 
                         SharedPreferences.Editor edit = settings.edit();
                         edit.putString(event.name, String.valueOf(insertedId));

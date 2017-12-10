@@ -61,7 +61,7 @@ public class NotesActivity extends AppCompatActivity {
         editMessage.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 Message message = new Message();
-                message.content = editMessage.getText().toString();
+                message.message = editMessage.getText().toString();
                 message.user = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                 message.time = System.currentTimeMillis();
 
