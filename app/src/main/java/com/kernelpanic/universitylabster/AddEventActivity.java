@@ -58,9 +58,6 @@ public class AddEventActivity extends AppCompatActivity {
     @BindView(R.id.editTextYear)
     EditText year;
 
-    @BindView(R.id.editTextSection)
-    EditText section;
-
     @OnClick(R.id.startPicker)
     void pickStart() {
         final Calendar myCalender = Calendar.getInstance();
@@ -131,7 +128,7 @@ public class AddEventActivity extends AppCompatActivity {
         data.put("up", 0);
         data.put("date", date);
         data.put("year", Integer.parseInt(year.getText().toString()));
-        data.put("section", section.getText().toString());
+        //data.put("section", section.getText().toString());
 
         databaseReference.child(String.valueOf(randomShit)).setValue(data);
 
@@ -145,7 +142,7 @@ public class AddEventActivity extends AppCompatActivity {
         notification.put("user_id",  user.getUid());
         notification.put("date", date);
         notification.put("year", Integer.parseInt(year.getText().toString()));
-        notification.put("section", section.getText().toString());
+        //notification.put("section", section.getText().toString());
 
         firebaseDatabase.getReference("notifications").child(String.valueOf(randomShit)).setValue(notification);
 

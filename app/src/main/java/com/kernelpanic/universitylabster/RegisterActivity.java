@@ -1,6 +1,7 @@
 package com.kernelpanic.universitylabster;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -58,15 +59,6 @@ public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.editYear)
     EditText editYear;
 
-    @BindView(R.id.editSection)
-    EditText editSection;
-
-    @BindView(R.id.editGroup)
-    EditText editGroup;
-
-    @BindView(R.id.editSubGroup)
-    EditText editSubGroup;
-
     @BindView(R.id.editContact)
     EditText editContact;
 
@@ -80,9 +72,6 @@ public class RegisterActivity extends AppCompatActivity {
             name = editName.getText().toString(),
             faculty = editFaculty.getText().toString(),
             year = editYear.getText().toString(),
-            section = editSection.getText().toString(),
-            group = editGroup.getText().toString(),
-            subGroup = editSubGroup.getText().toString(),
             contact = editContact.getText().toString();
 
         Boolean ok=true;
@@ -91,9 +80,6 @@ public class RegisterActivity extends AppCompatActivity {
         if(name.length()<5){ok=false;editName.setError("Invalid");}
         if(faculty.length()<5){ok=false;editFaculty.setError("Invalid");}
         if(year.length()>1){ok=false;editYear.setError("Invalid");}
-        if(section.length()<5){ok=false;editSection.setError("Invalid");}
-        if(group.length()<5){ok=false;editGroup.setError("Invalid");}
-        if(subGroup.length()<5){ok=false;editSubGroup.setError("Invalid");}
         if(!ok)return;
 
         final MaterialDialog dialog = new MaterialDialog.Builder(this)
@@ -121,16 +107,18 @@ public class RegisterActivity extends AppCompatActivity {
                                     Map<String, String> data = new HashMap<>();
                                     data.put("faculty", faculty);
                                     data.put("year", year);
-                                    data.put("section", section);
+                                   /* data.put("section", section);
                                     data.put("group", group);
-                                    data.put("subGroup", subGroup);
+                                    data.put("subGroup", subGroup);*/
                                     data.put("name", user.getDisplayName());
                                     data.put("contact", contact);
 
                                     reference.child(user.getUid()).setValue(data);
 
                                     createCalendar(user.getEmail(), "calendar_"+user.getDisplayName());
-                                    Log.e("user", user.getEmail()+" "+user.getDisplayName());
+                                    ///Log.e("user", user.getEmail()+" "+user.getDisplayName());
+                                    startActivity(new Intent(RegisterActivity.this, DashboardActivity.class));
+                                    finish();
 
                                     dialog.dismiss();
                                 } else {

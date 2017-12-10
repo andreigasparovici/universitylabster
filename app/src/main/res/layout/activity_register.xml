@@ -58,6 +58,7 @@
             android:ems="10"
             android:text="Jerry"
             android:hint="Nume"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editPassword" />
@@ -90,47 +91,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editFaculty" />
 
-        <EditText
-            android:id="@+id/editSection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:text="sectie"
-            android:hint="Secţie"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editYear" />
 
-        <EditText
-            android:id="@+id/editGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:text="grupa"
-            android:hint="Grupă"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editSection" />
-
-        <EditText
-            android:id="@+id/editSubGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:text="subgrupa"
-            android:hint="Subgrupă"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editGroup" />
 
         <EditText
             android:id="@+id/editContact"
@@ -145,7 +106,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:inputType="textMultiLine"
-            app:layout_constraintTop_toBottomOf="@+id/editSubGroup"
+            app:layout_constraintTop_toBottomOf="@+id/editYear"
+            android:autoLink="web"
             android:text="0771406295"/>
 
             <Button

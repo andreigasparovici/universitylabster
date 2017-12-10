@@ -37,8 +37,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         if (message == null) return convertView;
 
-        userName.setText(message.user);
-        content.setText(message.message);
+        userName.setText(message.message);
+        content.setText(message.user);
 
         return convertView;
     }
