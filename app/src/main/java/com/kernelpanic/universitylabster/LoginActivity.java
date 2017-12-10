@@ -254,13 +254,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        // [START_EXCLUDE]
                         Button signIn = findViewById(R.id.loginButton);
                         signIn.setVisibility(View.VISIBLE);
                         signOutButton.setVisibility(View.INVISIBLE);
                         disconectButton.setVisibility(View.INVISIBLE);
                         updateUI(null);
-                        // [END_EXCLUDE]
                     }
                 });
     }
