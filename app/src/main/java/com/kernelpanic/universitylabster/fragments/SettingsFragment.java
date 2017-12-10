@@ -43,13 +43,13 @@ public class SettingsFragment extends Fragment {
     @BindView(R.id.userYear)
     EditText userYear;
 
-    @BindView(R.id.userSection)
-    EditText userSection;
+//    @BindView(R.id.userSection)
+//    EditText userSection;
 
     void populateUI(String faculty, String section, String year) {
         userFaculty.setText(faculty);
         userYear.setText(year);
-        userSection.setText(section);
+        //userSection.setText(section);
     }
 
     @OnClick(R.id.changeData)
@@ -58,8 +58,8 @@ public class SettingsFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
         reference.child(user.getUid())
                 .child("faculty").setValue(userFaculty.getText().toString());
-        reference.child(user.getUid())
-                .child("section").setValue(userSection.getText().toString());
+//        reference.child(user.getUid())
+//                .child("section").setValue(userSection.getText().toString());
         reference.child(user.getUid())
                 .child("year").setValue(userYear.getText().toString());
         new MaterialDialog.Builder(SettingsFragment.this.getContext())

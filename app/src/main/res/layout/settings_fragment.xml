@@ -56,19 +56,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userEmail" />
 
-    <EditText
-        android:id="@+id/userSection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Section"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userFaculty" />
 
     <Button
         android:id="@+id/changeData"
@@ -81,7 +68,7 @@
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userSection" />
+        app:layout_constraintTop_toBottomOf="@+id/userFaculty" />
 
     <Button
         android:id="@+id/changePassword"
