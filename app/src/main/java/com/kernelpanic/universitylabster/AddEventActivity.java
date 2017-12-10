@@ -160,6 +160,8 @@ public class AddEventActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        editName.requestFocus();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle b = getIntent().getExtras();
