@@ -150,16 +150,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             new MultiInputMaterialDialogBuilder(this)
                     .addInput("","facultate")
                     .addInput("","an de studiu")
-                    .addInput("","sectiune")
+                    /*.addInput("","sectiune")
                     .addInput("","grup")
-                    .addInput("","subgrup")
+                    .addInput("","subgrup")*/
                     .addInput("","contact")
                     .inputs(new MultiInputMaterialDialogBuilder.InputsCallback() {
                         @Override
                         public void onInputs(MaterialDialog dialog, List<CharSequence> inputs, boolean allInputsValidated) {
-                            registerUser(account, inputs.get(0).toString(),inputs.get(1).toString(),
-                                    inputs.get(2).toString(), inputs.get(3).toString(), inputs.get(4).toString(),
-                                    inputs.get(5).toString());
+                            registerUser(account, inputs.get(0).toString(),inputs.get(1).toString(), inputs.get(2).toString());
                             signOut();
                             Intent intent = new Intent(LoginActivity.context, DashboardActivity.class);
                             startActivity(intent);
@@ -179,7 +177,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void registerUser(GoogleSignInAccount account, String faculty, String year, String section, String group, String subGroup, String contact){
+    public void registerUser(GoogleSignInAccount account, String faculty, String year, String contact){
         final MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .content("Vă rugăm aşteptaţi")
                 .progress(true, 0)
@@ -203,9 +201,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 Map<String, String> data = new HashMap<>();
                                                 data.put("faculty", faculty);
                                                 data.put("year", year);
-                                                data.put("section", section);
+                                                /*data.put("section", section);
                                                 data.put("group", group);
-                                                data.put("subGroup", subGroup);
+                                                data.put("subGroup", subGroup);*/
                                                 data.put("contact", contact);
 
                                                 reference.child(user.getUid()).setValue(data);
