@@ -1,12 +1,16 @@
 package com.kernelpanic.universitylabster;
 
+import android.content.ContentValues;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,7 +25,6 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.kernelpanic.universitylabster.utilities.CalendarOperations;
 
 import java.util.HashMap;
 import java.util.List;
@@ -126,8 +129,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     reference.child(user.getUid()).setValue(data);
 
-                                    CalendarOperations.getInstance()
-                                            .createCalendar(RegisterActivity.this, email, "calendar_" + email);
+                                    createCalendar(user.getEmail(), "calendar_"+user.getDisplayName());
+                                    Log.e("user", user.getEmail()+" "+user.getDisplayName());
 
                                     dialog.dismiss();
                                 } else {
@@ -141,7 +144,52 @@ public class RegisterActivity extends AppCompatActivity {
             });
     }
 
+    public void createCalendar(String account, String calendar_name) {
+        ContentValues values = new ContentValues();
+        values.put(
+                CalendarContract.Calendars.ACCOUNT_NAME,
+                account);
+        values.put(
+                CalendarContract.Calendars.ACCOUNT_TYPE,
+                CalendarContract.ACCOUNT_TYPE_LOCAL);
+        values.put(
+                CalendarContract.Calendars.NAME,
+                calendar_name);
+        values.put(
+                CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
+                calendar_name);
+        values.put(
+                CalendarContract.Calendars.CALENDAR_COLOR,
+                0xffff0000);
+        values.put(
+                CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL,
+                CalendarContract.Calendars.CAL_ACCESS_OWNER);
+        values.put(
+                CalendarContract.Calendars.OWNER_ACCOUNT,
+                account);
+        values.put(
+                CalendarContract.Calendars.CALENDAR_TIME_ZONE,
+                "Romania/Bucharest");
+        values.put(
+                CalendarContract.Calendars.SYNC_EVENTS,
+                1);
+        Uri.Builder builder =
+                CalendarContract.Calendars.CONTENT_URI.buildUpon();
+        builder.appendQueryParameter(
+                CalendarContract.Calendars.ACCOUNT_NAME,
+                "com"+account);
+        builder.appendQueryParameter(
+                CalendarContract.Calendars.ACCOUNT_TYPE,
+                CalendarContract.ACCOUNT_TYPE_LOCAL);
+        builder.appendQueryParameter(
+                CalendarContract.CALLER_IS_SYNCADAPTER,
+                "true");
+        if (ActivityCompat.checkSelfPermission(this, WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Uri uri = getContentResolver().insert(builder.build(), values);
 
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

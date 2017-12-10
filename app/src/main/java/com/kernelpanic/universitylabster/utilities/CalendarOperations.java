@@ -1,17 +1,15 @@
 package com.kernelpanic.universitylabster.utilities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.Manifest;
 import android.provider.CalendarContract;
 import android.support.v4.app.ActivityCompat;
-import android.app.Activity;
-
-import com.google.firebase.auth.FirebaseAuth;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -55,7 +53,6 @@ public class CalendarOperations {
         values.put(
                 CalendarContract.Calendars.OWNER_ACCOUNT,
                 account);
-        TimeZone timeZone = TimeZone.getTimeZone("Romania");
         values.put(
                 CalendarContract.Calendars.CALENDAR_TIME_ZONE,
                 "Romania/Bucharest");
@@ -66,7 +63,7 @@ public class CalendarOperations {
                 CalendarContract.Calendars.CONTENT_URI.buildUpon();
         builder.appendQueryParameter(
                 CalendarContract.Calendars.ACCOUNT_NAME,
-                "com" + account);
+                "com"+account);
         builder.appendQueryParameter(
                 CalendarContract.Calendars.ACCOUNT_TYPE,
                 CalendarContract.ACCOUNT_TYPE_LOCAL);
@@ -113,6 +110,7 @@ public class CalendarOperations {
 
         long calId = getCalendarId(context, account);
         if (calId == -1) {
+            Log.e("shit", "nu se face");
             // no calendar account; react meaningfully
             return -1;
         }

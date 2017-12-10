@@ -3,12 +3,18 @@ package com.kernelpanic.universitylabster;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.CalendarContract;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -37,18 +43,21 @@ import com.kernelpanic.universitylabster.fragments.WeekFragment;
 import com.kernelpanic.universitylabster.models.Event;
 import com.kernelpanic.universitylabster.models.NewEventNotification;
 import com.kernelpanic.universitylabster.utilities.ActionReciver;
-import com.kernelpanic.universitylabster.utilities.CalendarOperations;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.Manifest.permission.WRITE_CALENDAR;
 
 
 public class DashboardActivity extends AppCompatActivity {
@@ -242,15 +251,15 @@ public class DashboardActivity extends AppCompatActivity {
                     endMinute = Integer.valueOf(strtok.nextToken());
 
                     if (!settings.contains(event.name)) {
-                        Long insertedId = CalendarOperations.getInstance().addEvent(
-                            DashboardActivity.this,
-                            DashboardActivity.context,
+                        Long insertedId = addEvent(
                             new GregorianCalendar(new Date().getYear(), new Date().getMonth() - 1, new Date().getDate()),
                             firebaseUser.getEmail(),
                             event.location,
                             event.name,
                             event.teacher,
                             startHour, startMinute, endHour, endMinute);
+
+
 
                         SharedPreferences.Editor edit = settings.edit();
                         edit.putString(event.name, String.valueOf(insertedId));
@@ -338,4 +347,120 @@ public class DashboardActivity extends AppCompatActivity {
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(idNotificare);
     }
+
+    public long addEvent(Calendar cal, String account, String location, String title, String description, Integer startHour, Integer startMinute, Integer endHour, Integer endMinute) {
+
+
+        long calId = getCalendarId( account);
+        if (calId == -1) {
+            Log.e("shit", "nu se face");
+            // no calendar account; react meaningfully
+            return -1;
+        }
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+        cal.set(Calendar.HOUR, startHour - 2);
+        cal.set(Calendar.MINUTE, startMinute);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long start = cal.getTimeInMillis();
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+        cal.set(Calendar.HOUR, endHour - 2);
+        cal.set(Calendar.MINUTE, endMinute);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long end = cal.getTimeInMillis();
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.DTSTART, start);
+        values.put(CalendarContract.Events.DTEND, end);
+        values.put(CalendarContract.Events.TITLE, title);
+        values.put(CalendarContract.Events.EVENT_LOCATION, location);
+        values.put(CalendarContract.Events.CALENDAR_ID, calId);
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, "Romania/Bucharest");
+        values.put(CalendarContract.Events.DESCRIPTION,
+                description);
+// reasonable defaults exist:
+        values.put(CalendarContract.Events.ACCESS_LEVEL, CalendarContract.Events.ACCESS_PRIVATE);
+        values.put(CalendarContract.Events.SELF_ATTENDEE_STATUS,
+                CalendarContract.Events.STATUS_CONFIRMED);
+        values.put(CalendarContract.Events.ALL_DAY, 0);
+        values.put(CalendarContract.Events.ORGANIZER, account);
+        values.put(CalendarContract.Events.GUESTS_CAN_INVITE_OTHERS, 1);
+        values.put(CalendarContract.Events.GUESTS_CAN_MODIFY, 1);
+        values.put(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+        if (ActivityCompat.checkSelfPermission(this, WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            return -1;
+        }
+        Uri uri =
+                getContentResolver().
+                        insert(CalendarContract.Events.CONTENT_URI, values);
+        //Log.e("event", "created");
+        long eventId = new Long(uri.getLastPathSegment());
+
+        Uri REMINDERS_URI = Uri.parse(getCalendarUriBase() + "reminders");
+        values = new ContentValues();
+        values.put("event_id", eventId);
+        values.put("method", 1);
+        values.put("minutes", 60);
+        getContentResolver().insert(REMINDERS_URI, values);
+        REMINDERS_URI = Uri.parse(getCalendarUriBase() + "reminders");
+        values = new ContentValues();
+        values.put("event_id", eventId);
+        values.put("method", 1);
+        values.put("minutes", 1440);
+        getContentResolver().insert(REMINDERS_URI, values);
+        return eventId;
+    }
+
+    private String getCalendarUriBase() {
+
+        String calendarUriBase = null;
+        Uri calendars = Uri.parse("content://calendar/calendars");
+        Cursor managedCursor = null;
+        try {
+            managedCursor = managedQuery(calendars, null, null, null, null);
+        } catch (Exception e) {
+        }
+        if (managedCursor != null) {
+            calendarUriBase = "content://calendar/";
+        } else {
+            calendars = Uri.parse("content://com.android.calendar/calendars");
+            try {
+                managedCursor = managedQuery(calendars, null, null, null, null);
+            } catch (Exception e) { }
+            if (managedCursor != null) {
+                calendarUriBase = "content://com.android.calendar/";
+            }
+        }
+        return calendarUriBase;
+    }
+
+    private long getCalendarId(String account) {
+        String[] projection = new String[]{CalendarContract.Calendars._ID};
+        String selection =
+                CalendarContract.Calendars.ACCOUNT_NAME +
+                        " = ? AND " +
+                        CalendarContract.Calendars.ACCOUNT_TYPE +
+                        " = ? ";
+        // use the same values as above:
+        String[] selArgs =
+                new String[]{
+                        account,
+                        CalendarContract.ACCOUNT_TYPE_LOCAL};
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            return -1;
+        }
+        Cursor cursor =
+                context.getContentResolver().
+                        query(
+                                CalendarContract.Calendars.CONTENT_URI,
+                                projection,
+                                selection,
+                                selArgs,
+                                null);
+        if (cursor.moveToFirst()) {
+            return cursor.getLong(0);
+        }
+        return -1;
+    }
+
 }

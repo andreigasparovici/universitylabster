@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 public class SocialFragment extends Fragment {
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+    DatabaseReference reference;
 
     @BindView(R.id.userList)
     ListView userList;
@@ -44,6 +44,8 @@ public class SocialFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.social_fragment, container, false);
         ButterKnife.bind(this, view);
+
+        reference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
 
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
